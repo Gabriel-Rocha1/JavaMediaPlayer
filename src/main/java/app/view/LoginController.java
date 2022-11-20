@@ -1,6 +1,5 @@
 package app.view;
 
-import app.model.SongDirectory;
 import app.model.User;
 
 import java.io.IOException;
@@ -10,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.HashMap;
-
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -55,13 +53,13 @@ public class LoginController {
     
     private HashMap<String, String> credentials;
     private ArrayList<User> accounts;
-    private static final String ACCOUNTS_FILE_PATH = "src\\data\\accounts.dat";
+    private static final String ACCOUNTS_FILE_PATH = "data\\accounts.dat";
 
     
     @FXML
     public void initialize() throws IOException {
-    	credentials = new HashMap<String, String>();
-    	accounts = new ArrayList<User>();
+    	credentials = new HashMap<>();
+    	accounts = new ArrayList<>();
     	
     	File f = new File(ACCOUNTS_FILE_PATH);
     	if (f.exists()) {
@@ -127,7 +125,7 @@ public class LoginController {
     }
     
     @FXML
-    public void createAccount(ActionEvent e) throws IOException, NoSuchAlgorithmException {
+    public void createAccount(ActionEvent e) throws IOException {
 		String name = txtRegisterName.getText();
 		String username = txtRegisterUsername.getText();
 		String password = txtRegisterPassword.getText();

@@ -17,7 +17,7 @@ import org.jaudiotagger.tag.TagException;
 public class SongDirectory extends SongList {
 
 	private String directoryPath;
-	private static final String DIRECTORY_FILE_PATH = "\\data\\directory.dat";
+	private static final String DIRECTORY_FILE_PATH = "data\\directory.dat";
 	
 	public SongDirectory(String directoryPath) {
 		super();
