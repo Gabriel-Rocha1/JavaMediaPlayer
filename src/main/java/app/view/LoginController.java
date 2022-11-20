@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.Objects;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -80,7 +81,7 @@ public class LoginController {
 				credentials.put(username, password);			
 				
 				User u = new User(name, username);
-				if (vipStatus == "1")
+				if (vipStatus.equals("1"))
 					u.setVip(true);
 				
 				accounts.add(u);
