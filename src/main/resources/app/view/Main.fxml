@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.view.MainController">
+   <children>
+      <AnchorPane fx:id="mainScreen" layoutX="225.0" layoutY="25.0" prefHeight="350.0" prefWidth="500.0" />
+      <AnchorPane fx:id="explorerScreen" prefHeight="400.0" prefWidth="200.0">
+         <children>
+            <ListView fx:id="listDirectory" prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="listPlaylist" layoutY="200.0" prefHeight="200.0" prefWidth="200.0" />
+         </children></AnchorPane>
+      <AnchorPane fx:id="playerScreen" layoutX="200.0" layoutY="400.0" prefHeight="200.0" prefWidth="550.0">
+         <children>
+            <Button fx:id="bttnBackward" layoutX="163.0" layoutY="101.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-shape: &quot;M20 5v14l-7-7M6 5v14H4V5m9 0v14l-7-7&quot;; -fx-background-color: black;" />
+            <ProgressBar layoutX="25.0" layoutY="74.0" prefHeight="5.0" prefWidth="500.0" progress="0.0" />
+            <Button fx:id="bttnPlay" layoutX="263.0" layoutY="101.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-shape: &quot;M8 19V5l11 7Z&quot;; -fx-background-color: black;" />
+            <Button fx:id="bttnFoward" layoutX="363.0" layoutY="101.0" mnemonicParsing="false" prefHeight="24.0" prefWidth="24.0" style="-fx-shape: &quot;M4 5v14l7-7m7-7v14h2V5m-9 0v14l7-7&quot;; -fx-background-color: black;" />
+            <Slider layoutX="465.0" layoutY="100.0" orientation="VERTICAL" prefHeight="73.0" prefWidth="14.0" />
+            <Label alignment="CENTER" layoutX="25.0" layoutY="8.0" prefHeight="54.0" prefWidth="500.0" text="Weird Fishes/ Arpeggi">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="miniScreen" layoutY="400.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <ImageView fx:id="imgAlbumCover" fitHeight="200.0" fitWidth="200.0" pickOnBounds="true" preserveRatio="true" />
+         </children></AnchorPane>
+   </children>
+</AnchorPane>
