@@ -30,7 +30,7 @@ public class Playlist extends SongList {
 		this.songs.sort((firstSong, secondSong) -> firstSong.getTitle().compareToIgnoreCase(secondSong.getTitle()));
 	}
 	
-	public void sortByNameDesceding() {
+	public void sortByNameDescending() {
 		this.songs.sort((firstSong, secondSong) -> secondSong.getTitle().compareToIgnoreCase(firstSong.getTitle()));
 	}
 }

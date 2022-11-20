@@ -12,13 +12,10 @@ public class MainController {
 	private Button bttnBackward;
 
 	@FXML
-	private Button bttnFoward;
+	private Button bttnForward;
 
 	@FXML
 	private Button bttnPlay;
-
-	@FXML
-	private AnchorPane explorerScreen;
 
 	@FXML
 	private ImageView imgAlbumCover;
@@ -30,14 +27,20 @@ public class MainController {
 	private ListView<?> listPlaylist;
 
 	@FXML
-	private AnchorPane mainScreen;
+	private AnchorPane menuPane;
 
 	@FXML
-	private AnchorPane miniScreen;
+	private AnchorPane mainPane;
 
 	@FXML
-	private AnchorPane playerScreen;
+	private AnchorPane explorerPane;
+
+	@FXML
+	private AnchorPane miniPane;
+
+	@FXML
+	private AnchorPane playerPane;
+
 	public static User user;
-
 
 }

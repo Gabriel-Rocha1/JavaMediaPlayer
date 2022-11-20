@@ -15,6 +15,7 @@ public class JavaMediaPlayer extends Application {
 	@Override
 	public void start(Stage stage) throws IOException {
 		scene = new Scene(loadFXML("Login"));
+		stage.setTitle("Java Media Player");
 		stage.setScene(scene);
 		stage.show();
 	}
