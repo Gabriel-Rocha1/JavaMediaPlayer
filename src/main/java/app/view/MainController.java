@@ -1,11 +1,14 @@
 package app.view;
 
 import app.model.User;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
+
+import java.io.IOException;
 
 public class MainController {
 	@FXML
@@ -43,4 +46,8 @@ public class MainController {
 
 	public static User user;
 
+	@FXML
+	public void newPane(ActionEvent e) throws IOException {
+		mainPane.getChildren().setAll(JavaMediaPlayer.loadFXML("Directory"));
+	}
 }
