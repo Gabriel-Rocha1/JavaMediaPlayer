@@ -1,6 +1,8 @@
-package app.view;
+package app.control;
 
+import app.JavaMediaPlayer;
 import app.model.SongDirectory;
+
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -12,10 +14,9 @@ import javafx.scene.layout.VBox;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-public class DirectoryController implements Initializable {
-    @FXML
-    private GridPane gridDirectory;
-
+public class DirectoryListController implements Initializable {
+    @FXML private GridPane gridDirectory;
+    @FXML private Label labelEmptyDirectory;
     private int currentGridX;
     private int currentGridY;
 
@@ -27,11 +28,17 @@ public class DirectoryController implements Initializable {
     }
 
     public void updateGrid() {
-        for (SongDirectory directory : MainController.directories) {
+        this.labelEmptyDirectory.setVisible(false);
+        for (SongDirectory directory : JavaMediaPlayer.directories) {
             Button bttnDir = new Button();
             bttnDir.setPrefSize(64, 64);
             bttnDir.setText("");
             bttnDir.getStyleClass().add("dir-button");
+            bttnDir.setUserData(directory);
+            bttnDir.setOnAction(e -> {
+                JavaMediaPlayer.currentSongList = directory;
+                //TODO: mudar o mainPane para Directory.fxml
+            });
 
             Label lblDir = new Label();
             lblDir.setText(directory.getName());
@@ -47,7 +54,6 @@ public class DirectoryController implements Initializable {
             }
 
             this.gridDirectory.add(vboxDir, this.currentGridX, this.currentGridY);
-
             this.currentGridX++;
         }
     }

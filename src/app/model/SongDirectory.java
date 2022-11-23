@@ -19,7 +19,7 @@ public class SongDirectory extends SongList {
 	private String directoryPath;
 
 	private String name;
-	private static final String DIRECTORY_FILE_PATH = "data\\directory.dat";
+	private static final String DIRECTORY_FILE_PATH = "data/directory.dat";
 
 	public String getName() {
 		return name;

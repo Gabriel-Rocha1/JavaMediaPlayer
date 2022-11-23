@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane prefHeight="430.0" prefWidth="535.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.control.DirectoryController">
+   <children>
+      <TableView prefHeight="430.0" prefWidth="535.0">
+        <columns>
+          <TableColumn prefWidth="208.0" text="Título" />
+          <TableColumn prefWidth="249.0" text="Artista" />
+            <TableColumn prefWidth="76.0" text="Duração" />
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>
