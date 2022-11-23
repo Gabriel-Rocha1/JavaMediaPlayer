@@ -17,11 +17,22 @@ import org.jaudiotagger.tag.TagException;
 public class SongDirectory extends SongList {
 
 	private String directoryPath;
+
+	private String name;
 	private static final String DIRECTORY_FILE_PATH = "data\\directory.dat";
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
 	
-	public SongDirectory(String directoryPath) {
+	public SongDirectory(String directoryPath, String name) {
 		super();
 		this.directoryPath = directoryPath;
+		this.name = name;
 		try {
 			this.loadDirectory();
 			this.writeDirectory();

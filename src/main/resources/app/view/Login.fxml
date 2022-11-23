@@ -8,25 +8,25 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.view.LoginController">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.view.LoginController">
    <children>
-      <Label layoutX="495.0" layoutY="160.0" text="Nome de Usuário" />
-      <TextField fx:id="txtLoginUsername" layoutX="495.0" layoutY="180.0" />
-      <Label layoutX="495.0" layoutY="250.0" text="Senha" />
-      <TextField fx:id="txtLoginPassword" layoutX="495.0" layoutY="270.0" />
-      <Button fx:id="bttnEntrar" layoutX="495.0" layoutY="332.0" mnemonicParsing="false" onAction="#authenticate" prefHeight="25.0" prefWidth="149.0" text="Entrar">
+      <Label layoutX="496.0" layoutY="210.0" text="Nome de Usuário" />
+      <TextField fx:id="txtLoginUsername" layoutX="496.0" layoutY="230.0" />
+      <Label layoutX="496.0" layoutY="300.0" text="Senha" />
+      <TextField fx:id="txtLoginPassword" layoutX="496.0" layoutY="320.0" />
+      <Button fx:id="bttnEntrar" layoutX="496.0" layoutY="382.0" mnemonicParsing="false" onAction="#authenticate" prefHeight="25.0" prefWidth="149.0" text="Entrar">
          <cursor>
             <Cursor fx:constant="HAND" />
          </cursor></Button>
-      <Hyperlink fx:id="bttnRegister" layoutX="479.0" layoutY="399.0" onAction="#register" text="Não tem uma conta? Registre-se" textFill="#7b35a1" underline="true" />
-      <Label layoutX="100.0" layoutY="148.0" text="Nome" />
-      <TextField fx:id="txtRegisterName" disable="true" layoutX="100.0" layoutY="165.0" />
-      <Label layoutX="100.0" layoutY="208.0" text="Nome de Usuário" />
-      <TextField fx:id="txtRegisterUsername" disable="true" layoutX="100.0" layoutY="225.0" />
-      <Label layoutX="100.0" layoutY="269.0" text="Senha" />
-      <TextField fx:id="txtRegisterPassword" disable="true" layoutX="100.0" layoutY="285.0" />
-      <CheckBox fx:id="checkVIP" layoutX="100.0" layoutY="324.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="149.0" text="Conta VIP" />
-      <Button fx:id="bttnCreateAccount" disable="true" layoutX="100.0" layoutY="364.0" mnemonicParsing="false" onAction="#createAccount" prefHeight="25.0" prefWidth="149.0" text="Criar Conta" />
-      <AnchorPane fx:id="paneDivider" prefHeight="600.0" prefWidth="375.0" style="-fx-background-color: #7b35a1;" />
+      <Hyperlink fx:id="bttnRegister" layoutX="480.0" layoutY="449.0" onAction="#register" text="Não tem uma conta? Registre-se" textFill="#7b35a1" underline="true" />
+      <Label layoutX="99.0" layoutY="210.0" text="Nome" />
+      <TextField fx:id="txtRegisterName" disable="true" layoutX="99.0" layoutY="227.0" />
+      <Label layoutX="99.0" layoutY="270.0" text="Nome de Usuário" />
+      <TextField fx:id="txtRegisterUsername" disable="true" layoutX="99.0" layoutY="287.0" />
+      <Label layoutX="99.0" layoutY="331.0" text="Senha" />
+      <TextField fx:id="txtRegisterPassword" disable="true" layoutX="99.0" layoutY="347.0" />
+      <CheckBox fx:id="checkVIP" layoutX="99.0" layoutY="386.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="149.0" text="Conta VIP" />
+      <Button fx:id="bttnCreateAccount" disable="true" layoutX="99.0" layoutY="426.0" mnemonicParsing="false" onAction="#createAccount" prefHeight="25.0" prefWidth="149.0" text="Criar Conta" />
+      <AnchorPane fx:id="paneDivider" prefHeight="700.0" prefWidth="400.0" style="-fx-background-color: #7b35a1;" />
    </children>
 </AnchorPane>

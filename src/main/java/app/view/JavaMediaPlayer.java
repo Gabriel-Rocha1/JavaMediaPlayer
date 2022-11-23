@@ -4,19 +4,20 @@ import java.io.IOException;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 
 public class JavaMediaPlayer extends Application {
-	private static Scene scene;
+	static Scene scene;
 
 	@Override
 	public void start(Stage stage) throws IOException {
 		scene = new Scene(loadFXML("Login"));
+		scene.getStylesheets().add(JavaMediaPlayer.class.getResource("application.css").toExternalForm());
 		stage.setTitle("Java Media Player");
+		stage.setResizable(false);
 		stage.setScene(scene);
 		stage.show();
 	}
