@@ -5,13 +5,18 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Font?>
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.control.MainController">
    <children>
-      <AnchorPane fx:id="mainPane" layoutX="255.0" layoutY="50.0" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: orange;" />
-      <AnchorPane fx:id="explorerPane" layoutX="10.0" layoutY="50.0" prefHeight="430.0" prefWidth="235.0" style="-fx-background-color: purple;">
+      <AnchorPane fx:id="paneExplorer" layoutX="10.0" layoutY="50.0" prefHeight="430.0" prefWidth="235.0" style="-fx-background-color: purple;">
          <children>
             <ListView fx:id="listDirectory" layoutY="30.0" prefHeight="180.0" prefWidth="235.0" />
             <ListView fx:id="listPlaylist" layoutY="250.0" prefHeight="180.0" prefWidth="235.0" />
@@ -28,7 +33,7 @@
                </font>
             </Label>
          </children></AnchorPane>
-      <AnchorPane fx:id="playerPane" layoutX="220.0" layoutY="490.0" prefHeight="200.0" prefWidth="570.0" style="-fx-background-color: brown;">
+      <AnchorPane fx:id="panePlayer" layoutX="220.0" layoutY="490.0" prefHeight="200.0" prefWidth="570.0" style="-fx-background-color: brown;">
          <children>
             <Button fx:id="bttnBackward" layoutX="199.0" layoutY="148.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="25.0" style="-fx-shape: &quot;M427.6 106c15.6.1 27.7 13.8 25.7 29.3c-16 124-16 117.4 0 241.4c2.5 19.8-17.4 35-35.8 27.3l-267-111.1v98.8c0 7.9-8.9 14.2-20 14.3H78.49c-11.1-.1-20-6.4-20-14.3V120.2c.1-7.8 9-14.1 20-14.2h52.01c11 .1 19.9 6.4 20 14.2v98.9l267-111.1c3.2-1.3 6.6-2 10.1-2z&quot;; -fx-background-color: black;" />
             <ProgressBar layoutX="19.0" layoutY="112.0" prefHeight="5.0" prefWidth="535.0" progress="0.0" />
@@ -47,7 +52,38 @@
             </Label>
          </children>
       </AnchorPane>
-      <AnchorPane fx:id="miniPane" layoutX="10.0" layoutY="490.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: yellow;" />
-      <AnchorPane fx:id="menuPane" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="780.0" style="-fx-background-color: green;" />
+      <AnchorPane fx:id="paneMini" layoutX="10.0" layoutY="490.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: yellow;" />
+      <AnchorPane fx:id="paneMenu" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="780.0" style="-fx-background-color: green;" />
+      <AnchorPane layoutX="255.0" layoutY="50.0" prefHeight="430.0" prefWidth="535.0">
+         <children>
+            <Pane fx:id="paneDirectory" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: yellow;">
+               <children>
+                  <TableView fx:id="songsTable" prefHeight="430.0" prefWidth="535.0">
+                    <columns>
+                      <TableColumn fx:id="tablecolTitle" prefWidth="241.0" text="Título" />
+                      <TableColumn fx:id="tablecolArtist" prefWidth="224.0" text="Artista" />
+                        <TableColumn fx:id="tablecolLength" minWidth="0.0" prefWidth="69.0" text="Duração" />
+                    </columns>
+                  </TableView>
+               </children></Pane>
+            <Pane fx:id="paneListDirectory" prefHeight="430.0" prefWidth="535.0">
+               <children>
+                  <GridPane fx:id="gridDirectory" prefHeight="430.0" prefWidth="535.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+               </children>
+            </Pane>
+            <Pane fx:id="paneDefault" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: red;" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

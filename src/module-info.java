@@ -5,6 +5,7 @@ module JavaMediaPlayer {
 
     opens app to javafx.fxml;
     opens app.control to javafx.fxml;
+    opens app.model to javafx.base;
 
     exports app.control;
     exports app;

@@ -19,7 +19,6 @@ public class JavaMediaPlayer extends Application {
 	public static User user;
 	public static ArrayList<SongDirectory> directories;
 	public static ArrayList<Playlist> playlists;
-	public static SongList currentSongList;
 
 	@Override
 	public void start(Stage stage) throws IOException {
