@@ -43,7 +43,6 @@ public class LoginController implements Initializable {
     
     private HashMap<String, String> credentials;
     private ArrayList<User> accounts;
-    private static final String ACCOUNTS_FILE_PATH = "data/accounts.dat";
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -51,9 +50,9 @@ public class LoginController implements Initializable {
 		accounts = new ArrayList<>();
 
 		try {
-			File f = new File(ACCOUNTS_FILE_PATH);
+			File f = new File(JavaMediaPlayer.ACCOUNTS_FILE_PATH);
 			if (f.exists()) {
-				BufferedReader reader = new BufferedReader(new FileReader(ACCOUNTS_FILE_PATH));
+				BufferedReader reader = new BufferedReader(new FileReader(JavaMediaPlayer.ACCOUNTS_FILE_PATH));
 
 				String currentLine = reader.readLine();
 				String name, username, password, vipStatus;
@@ -160,7 +159,7 @@ public class LoginController implements Initializable {
 		byte[] credentials = (name + " " + username + " " + hashedPassword
 				+ " " + vipStatus + "\n").getBytes();
 
-		FileOutputStream fos = new FileOutputStream(ACCOUNTS_FILE_PATH, true);
+		FileOutputStream fos = new FileOutputStream(JavaMediaPlayer.ACCOUNTS_FILE_PATH, true);
 		fos.write(credentials);
 		fos.close();
 

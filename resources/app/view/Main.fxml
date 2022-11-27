@@ -20,7 +20,6 @@
          <children>
             <ListView fx:id="listDirectory" layoutY="30.0" prefHeight="180.0" prefWidth="235.0" />
             <ListView fx:id="listPlaylist" layoutY="250.0" prefHeight="180.0" prefWidth="235.0" />
-            <Label layoutX="14.0" layoutY="7.0" text="Diretórios" textFill="WHITE" />
             <Label layoutX="14.0" layoutY="222.0" text="Playlists" textFill="WHITE" />
             <Label fx:id="bttnAddDirectory" layoutX="213.0" layoutY="-2.0" onMouseClicked="#chooseDirectory" prefHeight="30.0" prefWidth="17.0" text="+" textFill="WHITE">
                <font>
@@ -32,6 +31,7 @@
                   <Font size="24.0" />
                </font>
             </Label>
+            <Label fx:id="labelDirectory" layoutX="14.0" layoutY="7.0" onMouseClicked="#showListDirectory" text="Diretórios" textFill="WHITE" />
          </children></AnchorPane>
       <AnchorPane fx:id="panePlayer" layoutX="220.0" layoutY="490.0" prefHeight="200.0" prefWidth="570.0" style="-fx-background-color: brown;">
          <children>
@@ -56,7 +56,7 @@
       <AnchorPane fx:id="paneMenu" layoutX="10.0" layoutY="10.0" prefHeight="30.0" prefWidth="780.0" style="-fx-background-color: green;" />
       <AnchorPane layoutX="255.0" layoutY="50.0" prefHeight="430.0" prefWidth="535.0">
          <children>
-            <Pane fx:id="paneDirectory" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: yellow;">
+            <Pane fx:id="paneDirectory" prefHeight="430.0" prefWidth="535.0">
                <children>
                   <TableView fx:id="songsTable" prefHeight="430.0" prefWidth="535.0">
                     <columns>
@@ -66,7 +66,7 @@
                     </columns>
                   </TableView>
                </children></Pane>
-            <Pane fx:id="paneListDirectory" prefHeight="430.0" prefWidth="535.0">
+            <Pane fx:id="paneListDirectory" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: #CBC3E3;">
                <children>
                   <GridPane fx:id="gridDirectory" prefHeight="430.0" prefWidth="535.0">
                     <columnConstraints>
@@ -82,7 +82,7 @@
                   </GridPane>
                </children>
             </Pane>
-            <Pane fx:id="paneDefault" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: red;" />
+            <Pane fx:id="paneDefault" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: #564D73;" />
          </children>
       </AnchorPane>
    </children>

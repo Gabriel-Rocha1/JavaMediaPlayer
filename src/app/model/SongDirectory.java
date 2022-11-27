@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import app.JavaMediaPlayer;
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
 import org.jaudiotagger.audio.AudioHeader;
@@ -15,11 +16,8 @@ import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
 
 public class SongDirectory extends SongList {
-
-	private String directoryPath;
-
+	private final String directoryPath;
 	private String name;
-	private static final String DIRECTORY_FILE_PATH = "data/directory.dat";
 
 	public String getName() {
 		return name;
@@ -28,14 +26,19 @@ public class SongDirectory extends SongList {
 	public void setName(String name) {
 		this.name = name;
 	}
+
+	public String getDirectoryPath() {
+		return directoryPath;
+	}
 	
-	public SongDirectory(String directoryPath, String name) {
+	public SongDirectory(String directoryPath, String name, boolean reloading) {
 		super();
 		this.directoryPath = directoryPath;
 		this.name = name;
 		try {
 			this.loadDirectory();
-			this.writeDirectory();
+			if (!reloading)
+				this.writeDirectory();
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -76,7 +79,7 @@ public class SongDirectory extends SongList {
 	}
 	
 	private void writeDirectory() throws IOException {
-		FileOutputStream fos = new FileOutputStream(DIRECTORY_FILE_PATH, true);
+		FileOutputStream fos = new FileOutputStream(JavaMediaPlayer.DIRECTORY_FILE_PATH, true);
 		fos.write((this.directoryPath + "\n").getBytes());
 		fos.close();
 	}

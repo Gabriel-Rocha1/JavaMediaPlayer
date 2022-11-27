@@ -20,6 +20,10 @@ public class JavaMediaPlayer extends Application {
 	public static ArrayList<SongDirectory> directories;
 	public static ArrayList<Playlist> playlists;
 
+	public static final String DIRECTORY_FILE_PATH = "data/directory.dat";
+	public static final String ACCOUNTS_FILE_PATH = "data/accounts.dat";
+
+
 	@Override
 	public void start(Stage stage) throws IOException {
 		JavaMediaPlayer.directories = new ArrayList<>();
