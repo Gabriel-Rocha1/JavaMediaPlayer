@@ -2,6 +2,8 @@ package app.model;
 
 import javafx.beans.property.SimpleStringProperty;
 
+import java.io.File;
+
 public class Song {
 	private int id;
 	
@@ -54,7 +56,7 @@ public class Song {
 	}
 
 	public String getPath() {
-		return path;
+		return new File(this.path).toURI().toString();
 	}
 
 	public void setPath(String path) {

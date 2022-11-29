@@ -1,6 +1,7 @@
 module JavaMediaPlayer {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.media;
     requires jaudiotagger;
 
     opens app to javafx.fxml;

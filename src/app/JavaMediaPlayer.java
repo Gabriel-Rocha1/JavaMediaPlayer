@@ -2,7 +2,6 @@ package app;
 
 import app.model.Playlist;
 import app.model.SongDirectory;
-import app.model.SongList;
 import app.model.User;
 
 import javafx.application.Application;

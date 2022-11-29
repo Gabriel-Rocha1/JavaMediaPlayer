@@ -5,8 +5,8 @@ import app.model.Song;
 import app.model.SongDirectory;
 
 import app.model.SongList;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import app.model.SongQueue;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -15,6 +15,8 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Callback;
 
@@ -26,6 +28,9 @@ import java.net.URL;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
+	@FXML private Label labelArtist;
+	@FXML private Label labelTitle;
+
 	@FXML private Label labelDirectory;
 	@FXML private Button bttnBackward;
 	@FXML private Button bttnForward;
@@ -45,11 +50,12 @@ public class MainController implements Initializable {
 
 	@FXML private GridPane gridDirectory;
 
-	@FXML private Pane paneDefault;
-	@FXML private Pane paneDirectory;
-	@FXML private Pane paneListDirectory;
+	@FXML private AnchorPane paneDefault;
+	@FXML private AnchorPane paneDirectory;
+	@FXML private ScrollPane paneListDirectory;
+	@FXML private AnchorPane paneSongSelection;
 
-	@FXML private TableView<?> songsTable;
+	@FXML private TableView<Song> tableSongs;
 
 	@FXML private TableColumn<Song, String> tablecolArtist;
 
@@ -57,27 +63,49 @@ public class MainController implements Initializable {
 
 	@FXML private TableColumn<Song, String> tablecolTitle;
 
+	@FXML private TableView<Song> songSelectionTable;
+
+	@FXML private TableColumn<Song, String> tablecolSelectionArtist;
+	@FXML private TableColumn<Song, String> tablecolSelectionLength;
+	@FXML private TableColumn<Song, String> tablecolSelectionTitle;
+
+	private MediaPlayer player;
+	private SongQueue queue;
+
 	private int currentGridX;
 	private int currentGridY;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		//TODO: inicializar o MainController
-		this.tablecolTitle.setResizable(false);
+		this.paneListDirectory.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+		this.paneListDirectory.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
 		this.tablecolTitle.setReorderable(false);
-
-		this.tablecolArtist.setResizable(false);
 		this.tablecolArtist.setReorderable(false);
-
-		this.tablecolLength.setResizable(false);
 		this.tablecolLength.setReorderable(false);
 
-		this.tablecolTitle.setCellValueFactory(new PropertyValueFactory<Song,String>("title"));
-		this.tablecolArtist.setCellValueFactory(new PropertyValueFactory<Song,String>("artist"));
-		this.tablecolLength.setCellValueFactory(new PropertyValueFactory<Song,String>("length"));
+		this.tablecolSelectionTitle.setReorderable(false);
+		this.tablecolSelectionArtist.setReorderable(false);
+		this.tablecolSelectionLength.setReorderable(false);
+
+		this.tablecolTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+		this.tablecolArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
+		this.tablecolLength.setCellValueFactory(new PropertyValueFactory<>("length"));
 
 		this.tablecolArtist.setStyle("-fx-alignment: center");
-		this.tablecolLength.setStyle("-fx-alignment: CENTER-RIGHT");
+		this.tablecolLength.setStyle("-fx-alignment: center");
+
+		Region icon = new Region();
+		icon.getStyleClass().add("icon-clock");
+
+		final int SIZE = 12;
+
+		icon.setMinSize(SIZE, SIZE);
+		icon.setPrefSize(SIZE, SIZE);
+		icon.setMaxSize(SIZE, SIZE);
+
+		this.tablecolLength.setGraphic(icon);
 
 		try {
 			this.loadDirectories();
@@ -88,7 +116,7 @@ public class MainController implements Initializable {
 		this.listDirectory.setCellFactory(new Callback<>() {
 			@Override
 			public ListCell<SongDirectory> call(ListView<SongDirectory> param) {
-				ListCell<SongDirectory> cell = new ListCell<SongDirectory>() {
+				return new ListCell<>() {
 					@Override
 					protected void updateItem(SongDirectory item, boolean empty) {
 						super.updateItem(item, empty);
@@ -98,19 +126,32 @@ public class MainController implements Initializable {
 							setText("");
 					}
 				};
-				return cell;
 			}
 		});
 
-		this.listDirectory.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<SongDirectory>() {
-			@Override
-			public void changed(ObservableValue<? extends SongDirectory> observableValue, SongDirectory directory, SongDirectory t1) {
-				SongDirectory dir = listDirectory.getSelectionModel().getSelectedItem();
-				showSongList(dir);
-			}
+		this.listDirectory.getSelectionModel().selectedItemProperty().addListener((observableValue, directory, t1) -> {
+			SongDirectory dir = listDirectory.getSelectionModel().getSelectedItem();
+			showSongList(dir);
 		});
 
+		this.tableSongs.setRowFactory( tv -> {
+			TableRow<Song> row = new TableRow<>();
+			row.setOnMouseClicked(e -> {
+				if (e.getClickCount() == 2 && (! row.isEmpty()) ) {
+					if (this.queue != null)
+							this.queue = null;
 
+					int first = this.tableSongs.getSelectionModel().getSelectedIndex();
+					int last = this.tableSongs.getItems().size();
+
+					for (int i = first; i < last; i++)
+						this.addToQueue((Song) this.tableSongs.getItems().get(i));
+
+					this.play();
+				}
+			});
+			return row;
+		});
 
 		this.showDefault();
 	}
@@ -133,9 +174,8 @@ public class MainController implements Initializable {
 		}
 	}
 
-
 	@FXML
-	public void chooseDirectory() throws IOException {
+	public void chooseDirectory() {
 		DirectoryChooser dc = new DirectoryChooser();
 		dc.setTitle("Escolha um diretório");
 		File f = dc.showDialog(JavaMediaPlayer.scene.getWindow());
@@ -156,7 +196,7 @@ public class MainController implements Initializable {
 		JavaMediaPlayer.directories.add(directory);
 
 		Region icon = new Region();
-		icon.getStyleClass().add("dir-button");
+		icon.getStyleClass().add("icon-directory");
 
 		final int SIZE = 64;
 
@@ -164,7 +204,9 @@ public class MainController implements Initializable {
 		icon.setPrefSize(SIZE, SIZE);
 		icon.setMaxSize(SIZE, SIZE);
 		icon.setOnMouseClicked(e -> {
-			if (this.listDirectory.getSelectionModel().getSelectedItem().equals(directory))
+			if (this.listDirectory.getSelectionModel().getSelectedItem() == null)
+				this.showSongList(directory);
+			else if (this.listDirectory.getSelectionModel().getSelectedItem().equals(directory))
 				this.showSongList(directory);
 			else
 				this.listDirectory.getSelectionModel().select(directory);
@@ -197,7 +239,6 @@ public class MainController implements Initializable {
 	}
 
 	private void showDefault() {
-
 		this.paneDefault.toFront();
 	}
 
@@ -207,13 +248,103 @@ public class MainController implements Initializable {
 	}
 
 	private void showListDirectory() {
-
 		this.paneListDirectory.toFront();
 	}
 
 	private void showSongList(SongList songList) {
-
-		this.songsTable.setItems(songList.list());
+		this.tableSongs.setItems(songList.list());
 		this.paneDirectory.toFront();
+	}
+
+	@FXML
+	public void addToQueue(Song s) {
+		if (this.queue == null)
+			this.queue = new SongQueue();
+
+		this.queue.add(s);
+	}
+
+	private void play() {
+		if (player != null)
+			player.dispose();
+
+		Song currentSong = this.queue.next();
+		if (currentSong == null) {
+			currentSong = this.queue.first();
+		}
+
+		player = new MediaPlayer(new Media(currentSong.getPath()));
+		player.setOnEndOfMedia(this::play);
+		player.play();
+
+		this.labelTitle.setText(currentSong.getTitle());
+		this.labelArtist.setText(currentSong.getArtist());
+	}
+
+	@FXML
+	public void playNext() {
+		if (this.queue == null)
+			return;
+
+		if (player != null)
+			player.dispose();
+
+		Song currentSong = this.queue.next();
+		if (currentSong == null) {
+			currentSong = this.queue.first();
+		}
+
+		player = new MediaPlayer(new Media(currentSong.getPath()));
+		player.setOnEndOfMedia(this::play);
+		player.play();
+
+		this.labelTitle.setText(currentSong.getTitle());
+		this.labelArtist.setText(currentSong.getArtist());
+	}
+
+	@FXML
+	public void playPrevious(MouseEvent e) {
+		if (this.queue == null)
+			return;
+
+		if (e.getClickCount() == 2) {
+			if (player != null)
+				player.dispose();
+
+			Song currentSong = this.queue.previous();
+			if (currentSong == null)
+				currentSong = this.queue.last();
+
+			player = new MediaPlayer(new Media(currentSong.getPath()));
+			player.setOnEndOfMedia(this::play);
+			player.play();
+
+			this.labelTitle.setText(currentSong.getTitle());
+			this.labelArtist.setText(currentSong.getArtist());
+		}
+	}
+
+	@FXML
+	public void pauseOrResume() {
+		if (this.player == null)
+			return;
+
+		if (this.player.getStatus() == MediaPlayer.Status.PLAYING) {
+			this.player.pause();
+			//TODO: mudar o ícone do botão para Play
+		}
+
+		if (this.player.getStatus() == MediaPlayer.Status.PAUSED) {
+			this.player.play();
+			//TODO: mudar o ícone do botão para Pause
+		}
+	}
+
+	@FXML
+	public void reset(ActionEvent e) {
+		if (this.player == null)
+			return;
+
+		this.player.seek(this.player.getStartTime());
 	}
 }
