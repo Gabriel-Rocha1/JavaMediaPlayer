@@ -20,6 +20,7 @@ public class JavaMediaPlayer extends Application {
 	public static ArrayList<Playlist> playlists;
 
 	public static final String DIRECTORY_FILE_PATH = "data/directory.dat";
+	public static final String PLAYLISTS_DIRECTORY_PATH = "data/playlists";
 	public static final String ACCOUNTS_FILE_PATH = "data/accounts.dat";
 
 

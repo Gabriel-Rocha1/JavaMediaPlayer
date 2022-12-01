@@ -167,7 +167,12 @@ public class LoginController implements Initializable {
 		txtRegisterUsername.clear();
 		txtRegisterPassword.clear();
 
-		JavaMediaPlayer.setRoot("Main");
+		if (vipStatus == 1) {
+			File f = new File(JavaMediaPlayer.PLAYLISTS_DIRECTORY_PATH + "/" + username);
+			f.mkdir();
+		}
+
+		JavaMediaPlayer.setRoot("view/Main");
 	}
     
     private String hashPassword(String password) {

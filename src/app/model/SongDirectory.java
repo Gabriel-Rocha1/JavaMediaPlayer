@@ -73,7 +73,7 @@ public class SongDirectory extends SongList {
 			filePath = file.getPath();
 
 			//TODO: implementar a identificação de músicas
-			Song s = new Song(0, title, length, artist, filePath);
+			Song s = new Song(title, length, artist, filePath);
 			this.add(s);
 		}
 	}
