@@ -8,39 +8,37 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileReader;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
+
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+
+import java.net.URL;
+
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Hyperlink;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 
 public class LoginController implements Initializable {
 	@FXML private Button bttnCreateAccount;
-    @FXML private Button bttnEntrar;
-
-	@FXML private Hyperlink bttnRegister;
 
 	@FXML private CheckBox checkVIP;
 
 	@FXML private AnchorPane paneDivider;
 
 	@FXML private TextField txtLoginPassword;
-
     @FXML private TextField txtLoginUsername;
     @FXML private TextField txtRegisterName;
     @FXML private TextField txtRegisterPassword;
     @FXML private TextField txtRegisterUsername;
-    
+
+	@FXML private Dialog<String> dialog;
+	@FXML private ButtonType type;
+
     private HashMap<String, String> credentials;
     private ArrayList<User> accounts;
 
@@ -48,6 +46,11 @@ public class LoginController implements Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		credentials = new HashMap<>();
 		accounts = new ArrayList<>();
+
+		dialog = new Dialog<>();
+		dialog.setTitle("Erro");
+		type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().add(type);
 
 		try {
 			File f = new File(JavaMediaPlayer.ACCOUNTS_FILE_PATH);
@@ -84,7 +87,7 @@ public class LoginController implements Initializable {
 	}
     
     @FXML
-    public void authenticate(ActionEvent e) throws IOException {
+    public void authenticate() throws IOException {
     	String username = txtLoginUsername.getText();
     	String password = hashPassword(txtLoginPassword.getText());
 
@@ -101,23 +104,24 @@ public class LoginController implements Initializable {
     	if (authorized) {
 			JavaMediaPlayer.setRoot("view/Main");
     	} else {
-    		//TODO: lidar com credenciais não autorizadas
+			dialog.setContentText("Nome de Usuário ou Senha inválidos.");
+			dialog.showAndWait();
     	}
     }
     
     @FXML
-    public void register(ActionEvent e) {
+    public void register() {
     	txtRegisterName.setDisable(false);
     	txtRegisterUsername.setDisable(false);
     	txtRegisterPassword.setDisable(false);
     	bttnCreateAccount.setDisable(false);
     	
     	//TODO: criar animação de deslizar o painel para a direita
-    	paneDivider.setLayoutX(375);
+    	paneDivider.setLayoutX(400);
     }
     
     @FXML
-    public void createAccount(ActionEvent e) throws IOException {
+    public void createAccount() throws IOException {
 		String name = txtRegisterName.getText();
 		String username = txtRegisterUsername.getText();
 		String password = txtRegisterPassword.getText();
@@ -127,22 +131,26 @@ public class LoginController implements Initializable {
 			vipStatus = 1;
 
 		if (name.trim().length() == 0) {
-			//TODO: sinalizar que o campo "Nome" está vazio
+			dialog.setContentText("O campo Nome está vazio.");
+			dialog.showAndWait();
 			return;
 		}
 
 		if (username.trim().length() == 0) {
-			//TODO: sinalizar que o campo "Nome de Usuário" está vazio
+			dialog.setContentText("O campo Nome de Usuário está vazio.");
+			dialog.showAndWait();
 			return;
 		}
 
 		if (password.trim().length() == 0) {
-			//TODO: sinalizar que o campo "Senha" está vazio
+			dialog.setContentText("O campo Senha está vazio.");
+			dialog.showAndWait();
 			return;
 		}
 
 		if (credentials.containsKey(username)) {
-			//TODO: lidar com usernames já registrados
+			dialog.setContentText("Nome de usuário já registrado.");
+			dialog.showAndWait();
 			return;
 		}
 

@@ -45,7 +45,6 @@ public class SongDirectory extends SongList {
 	}
 	
 	private void loadDirectory() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
-		//TODO: implementar o carregamento de um diretório no sistema.
 		File directory = new File(directoryPath);
 		File[] files = directory.listFiles();
 
@@ -56,7 +55,6 @@ public class SongDirectory extends SongList {
 		AudioHeader audioHeader;
 		Tag tag;
 
-
 		for (File file : files) {
 			fileName = file.toString();
 			if (!isMP3(fileName))
@@ -66,13 +64,17 @@ public class SongDirectory extends SongList {
 			audioHeader = audioFile.getAudioHeader();
 			tag = audioFile.getTag();
 
-			//TODO: lidar com tags inexistentes
 			title = tag.getFirst(FieldKey.TITLE);
+			if (title.equals(""))
+				title = file.getName();
+
 			artist = tag.getFirst(FieldKey.ARTIST);
+			if (artist.equals(""))
+				artist = "Artista Desconhecido";
+
 			length = audioHeader.getTrackLength();
 			filePath = file.getPath();
 
-			//TODO: implementar a identificação de músicas
 			Song s = new Song(title, length, artist, filePath);
 			this.add(s);
 		}

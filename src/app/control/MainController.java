@@ -9,13 +9,13 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.stage.DirectoryChooser;
 import javafx.util.Callback;
+
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
@@ -23,6 +23,7 @@ import org.jaudiotagger.tag.TagException;
 
 import java.io.*;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.ResourceBundle;
 
 public class MainController implements Initializable {
@@ -39,13 +40,11 @@ public class MainController implements Initializable {
 	@FXML private Label bttnAddDirectory;
 	@FXML private Label bttnAddPlaylist;
 	@FXML private Button bttnNamePlaylist;
-
-	@FXML private ImageView imgAlbumCover;
+	@FXML private Region bttnMute;
 
 	@FXML private ListView<SongDirectory> listDirectory;
 	@FXML private AnchorPane paneMenu;
 	@FXML private AnchorPane paneExplorer;
-	@FXML private AnchorPane paneMini;
 	@FXML private AnchorPane panePlayer;
 
 	@FXML private GridPane gridDirectory;
@@ -72,6 +71,15 @@ public class MainController implements Initializable {
 	@FXML private TableColumn<Song, String> tablecolSelectionLength;
 	@FXML private TableColumn<Song, String> tablecolSelectionTitle;
 
+	@FXML private Dialog<String> dialog;
+	@FXML private ButtonType type;
+
+	@FXML private MenuButton menuProfile;
+
+	@FXML private MenuItem menuItemLogout;
+
+	@FXML private Slider sliderVolume;
+
 	private MediaPlayer player;
 	private SongQueue queue;
 
@@ -83,42 +91,73 @@ public class MainController implements Initializable {
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		//TODO: inicializar o MainController
-		this.paneListDirectory.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
-		this.paneListDirectory.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+		dialog = new Dialog<>();
+		dialog.setTitle("Erro");
+		type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
+		dialog.getDialogPane().getButtonTypes().add(type);
+
+		menuProfile.setText("Olá, " + JavaMediaPlayer.user.getName());
+		menuItemLogout.setOnAction(e -> {
+			try {
+				logout();
+			} catch (IOException ex) {
+				throw new RuntimeException(ex);
+			}
+		});
+
+		paneListDirectory.hbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.NEVER);
+		paneListDirectory.vbarPolicyProperty().setValue(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+		bttnPlay.getStyleClass().setAll("icon-playButton");
+
+		bttnMute.getStyleClass().setAll("icon-volume");
 
 		// tableSongs
 		this.tableSongs.setRowFactory( tv -> {
 			TableRow<Song> row = new TableRow<>();
 			row.setOnMouseClicked(e -> {
 				if (e.getClickCount() == 2 && (! row.isEmpty()) ) {
-					if (this.queue != null)
-						this.queue = null;
+					if (queue != null)
+						queue = null;
 
-					int first = this.tableSongs.getSelectionModel().getSelectedIndex();
-					int last = this.tableSongs.getItems().size();
+					int first = tableSongs.getSelectionModel().getSelectedIndex();
+					int last = tableSongs.getItems().size();
 
 					for (int i = first; i < last; i++)
-						this.addToQueue((Song) this.tableSongs.getItems().get(i));
+						addToQueue(tableSongs.getItems().get(i));
 
-					this.play();
+					play();
 				}
 			});
 			return row;
 		});
 
-		this.tablecolTitle.setReorderable(false);
-		this.tablecolArtist.setReorderable(false);
-		this.tablecolLength.setReorderable(false);
+		this.sliderVolume.valueProperty().addListener(observable -> {
+			if (player != null)
+				player.setVolume(sliderVolume.getValue() / 100);
+			if (sliderVolume.getValue() == 0)
+				bttnMute.getStyleClass().setAll("icon-mute");
+			else
+				bttnMute.getStyleClass().setAll("icon-volume");
+
+			String style = String.format("-fx-background-color: linear-gradient(to right, #AA96DA %d%%, #969696 %d%%);",
+					(int) sliderVolume.getValue(), (int) sliderVolume.getValue());
+			sliderVolume.lookup(".track").setStyle(style);
+
+		});
+
+		tablecolTitle.setReorderable(false);
+		tablecolArtist.setReorderable(false);
+		tablecolLength.setReorderable(false);
 
 
 
-		this.tablecolTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-		this.tablecolArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
-		this.tablecolLength.setCellValueFactory(new PropertyValueFactory<>("length"));
+		tablecolTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+		tablecolArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
+		tablecolLength.setCellValueFactory(new PropertyValueFactory<>("length"));
 
-		this.tablecolArtist.setStyle("-fx-alignment: center");
-		this.tablecolLength.setStyle("-fx-alignment: center");
+		tablecolArtist.setStyle("-fx-alignment: center");
+		tablecolLength.setStyle("-fx-alignment: center");
 
 
 
@@ -131,24 +170,24 @@ public class MainController implements Initializable {
 		icon.setPrefSize(SIZE, SIZE);
 		icon.setMaxSize(SIZE, SIZE);
 
-		this.tablecolLength.setGraphic(icon);
+		tablecolLength.setGraphic(icon);
 
 		//tableSongSelection
 
-		this.tablecolSelectionTitle.setReorderable(false);
-		this.tablecolSelectionArtist.setReorderable(false);
-		this.tablecolSelectionLength.setReorderable(false);
+		tablecolSelectionTitle.setReorderable(false);
+		tablecolSelectionArtist.setReorderable(false);
+		tablecolSelectionLength.setReorderable(false);
 
-		this.tablecolSelectionTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
-		this.tablecolSelectionArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
-		this.tablecolSelectionLength.setCellValueFactory(new PropertyValueFactory<>("length"));
+		tablecolSelectionTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
+		tablecolSelectionArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
+		tablecolSelectionLength.setCellValueFactory(new PropertyValueFactory<>("length"));
 
-		this.tablecolSelectionArtist.setStyle("-fx-alignment: center");
-		this.tablecolSelectionLength.setStyle("-fx-alignment: center");
+		tablecolSelectionArtist.setStyle("-fx-alignment: center");
+		tablecolSelectionLength.setStyle("-fx-alignment: center");
 
-		this.tablecolSelectionLength.setGraphic(icon);
+		tablecolSelectionLength.setGraphic(icon);
 
-		this.tableSongSelection.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+		tableSongSelection.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 
 
@@ -169,15 +208,15 @@ public class MainController implements Initializable {
 			}
 		});
 
-		this.listDirectory.getSelectionModel().selectedItemProperty().addListener((observableValue, directory, t1) -> {
+		listDirectory.getSelectionModel().selectedItemProperty().addListener((observableValue, directory, t1) -> {
 			SongDirectory dir = listDirectory.getSelectionModel().getSelectedItem();
 			showSongList(dir);
 
 		});
 
 		try {
-			this.loadDirectories();
-			this.loadPlaylists();
+			loadDirectories();
+			loadPlaylists();
 		} catch (IOException | CannotReadException | TagException | InvalidAudioFrameException | ReadOnlyFileException e) {
 			throw new RuntimeException(e);
 		}
@@ -195,7 +234,7 @@ public class MainController implements Initializable {
 
 			while (currentLine != null) {
 				songDir = new File(currentLine);
-				this.addDirectory(currentLine, songDir.getName(), true);
+				addDirectory(currentLine, songDir.getName(), true);
 
 				currentLine = reader.readLine();
 			}
@@ -227,7 +266,7 @@ public class MainController implements Initializable {
 				line = reader.readLine();
 			}
 			JavaMediaPlayer.playlists.add(playlist);
-			this.addPlaylistToGrid(playlist);
+			addPlaylistToGrid(playlist);
 		}
 	}
 
@@ -238,14 +277,14 @@ public class MainController implements Initializable {
 		File f = dc.showDialog(JavaMediaPlayer.scene.getWindow());
 		String path = f.getAbsolutePath();
 
-		this.addDirectory(path, f.getName(), false);
+		addDirectory(path, f.getName(), false);
 	}
 
 	private void addDirectory(String path, String name, boolean reloading) {
 		for (SongDirectory dir : JavaMediaPlayer.directories)
 			if (dir.getDirectoryPath().equals(path)) {
-				//TODO: alertar que o diretório já existe
-
+				dialog.setContentText("O diretório já está registrado no sistema.");
+				dialog.showAndWait();
 				return;
 			}
 
@@ -261,12 +300,12 @@ public class MainController implements Initializable {
 		icon.setPrefSize(SIZE, SIZE);
 		icon.setMaxSize(SIZE, SIZE);
 		icon.setOnMouseClicked(e -> {
-			if (this.listDirectory.getSelectionModel().getSelectedItem() == null)
-				this.showSongList(directory);
-			else if (this.listDirectory.getSelectionModel().getSelectedItem().equals(directory))
-				this.showSongList(directory);
+			if (listDirectory.getSelectionModel().getSelectedItem() == null)
+				showSongList(directory);
+			else if (listDirectory.getSelectionModel().getSelectedItem().equals(directory))
+				showSongList(directory);
 			else
-				this.listDirectory.getSelectionModel().select(directory);
+				listDirectory.getSelectionModel().select(directory);
 		});
 
 		Label title = new Label();
@@ -277,60 +316,65 @@ public class MainController implements Initializable {
 		vboxDir.getChildren().add(icon);
 		vboxDir.getChildren().add(title);
 
-		if (this.currentDirGridX == this.gridDirectory.getColumnCount()) {
-			this.currentDirGridX = 0;
-			this.currentDirGridY++;
+		if (currentDirGridX == gridDirectory.getColumnCount()) {
+			currentDirGridX = 0;
+			currentDirGridY++;
 		}
 
-		this.gridDirectory.add(vboxDir, this.currentDirGridX, this.currentDirGridY);
-		this.currentDirGridX++;
+		gridDirectory.add(vboxDir, currentDirGridX, currentDirGridY);
+		currentDirGridX++;
 
-		this.listDirectory.getItems().add(directory);
+		listDirectory.getItems().add(directory);
 
-		this.showDirectories();
+		showDirectories();
 	}
 
 	@FXML
 	public void addPlaylist(MouseEvent e) {
 		if (JavaMediaPlayer.user.isVip()) {
-			this.txtNamePlaylist.clear();
-			this.paneNamePlaylist.toFront();
+			txtNamePlaylist.clear();
+			paneNamePlaylist.toFront();
 		} else {
-			//TODO: Dialog avisando que o usuário não é VIP
-			return;
+			dialog.setContentText("Essa funcionalidade é exclusiva para membros VIP.");
+			dialog.showAndWait();
 		}
-
 	}
 
 	@FXML
 	public void namePlaylist(ActionEvent e) {
-		if (this.txtNamePlaylist.getText().trim().length() == 0) {
-			//TODO: sinalizar que o campo "Nome da Playlist" está vazio
+		String name = this.txtNamePlaylist.getText().trim();
+
+		if (name.length() == 0) {
+			dialog.setContentText("O campo Nome da Playlist está vazio.");
+			dialog.showAndWait();
 			return;
 		}
 
-		//TODO: checar se já existe uma playlist com esse nome
+		for (Playlist p : JavaMediaPlayer.playlists)
+			if (name.equals(p.getName())) {
+				dialog.setContentText("Já existe uma playlist com o nome " + name + ".");
+				dialog.showAndWait();
+				return;
+			}
 
 		for (SongDirectory d : JavaMediaPlayer.directories)
 			for (int i = 0; i < d.size(); i++)
-				this.tableSongSelection.getItems().add(d.at(i));
+				tableSongSelection.getItems().add(d.at(i));
 
-		this.paneSongSelection.toFront();
+		paneSongSelection.toFront();
 	}
 
 	@FXML
 	public void createPlaylist() throws IOException {
 		Playlist playlist = new Playlist(
 				JavaMediaPlayer.user,
-				this.txtNamePlaylist.getText().trim(),
-				this.tableSongSelection.getSelectionModel().getSelectedItems()
+				txtNamePlaylist.getText().trim(),
+				tableSongSelection.getSelectionModel().getSelectedItems()
 		);
 
 		JavaMediaPlayer.playlists.add(playlist);
 
-		//TODO: salvar playlist na memória
 		playlist.write();
-
 
 		Region icon = new Region();
 		icon.getStyleClass().add("icon-playlist");
@@ -341,7 +385,9 @@ public class MainController implements Initializable {
 		icon.setPrefSize(SIZE, SIZE);
 		icon.setMaxSize(SIZE, SIZE);
 
-		icon.setOnMouseClicked(e -> {this.showSongList(playlist);});
+		icon.setOnMouseClicked(e -> {
+			showSongList(playlist);
+		});
 
 		Label title = new Label();
 		title.setText(playlist.getName());
@@ -351,15 +397,15 @@ public class MainController implements Initializable {
 		vboxDir.getChildren().add(icon);
 		vboxDir.getChildren().add(title);
 
-		if (this.currentPlayGridX == this.gridPlaylist.getColumnCount()) {
-			this.currentPlayGridX = 0;
-			this.currentPlayGridY++;
+		if (currentPlayGridX == gridPlaylist.getColumnCount()) {
+			currentPlayGridX = 0;
+			currentPlayGridY++;
 		}
 
-		this.gridPlaylist.add(vboxDir, this.currentPlayGridX, this.currentPlayGridY);
-		this.currentPlayGridX++;
+		gridPlaylist.add(vboxDir, currentPlayGridX, currentPlayGridY);
+		currentPlayGridX++;
 
-		this.showPlaylists();
+		showPlaylists();
 	}
 
 	private void addPlaylistToGrid(Playlist playlist) {
@@ -372,7 +418,9 @@ public class MainController implements Initializable {
 		icon.setPrefSize(SIZE, SIZE);
 		icon.setMaxSize(SIZE, SIZE);
 
-		icon.setOnMouseClicked(e -> {this.showSongList(playlist);});
+		icon.setOnMouseClicked(e -> {
+			showSongList(playlist);
+		});
 
 		Label title = new Label();
 		title.setText(playlist.getName());
@@ -382,138 +430,162 @@ public class MainController implements Initializable {
 		vboxDir.getChildren().add(icon);
 		vboxDir.getChildren().add(title);
 
-		if (this.currentPlayGridX == this.gridPlaylist.getColumnCount()) {
-			this.currentPlayGridX = 0;
-			this.currentPlayGridY++;
+		if (currentPlayGridX == gridPlaylist.getColumnCount()) {
+			currentPlayGridX = 0;
+			currentPlayGridY++;
 		}
 
-		this.gridPlaylist.add(vboxDir, this.currentPlayGridX, this.currentPlayGridY);
-		this.currentPlayGridX++;
+		gridPlaylist.add(vboxDir, currentPlayGridX, currentPlayGridY);
+		currentPlayGridX++;
 	}
 
 	@FXML
 	public void showPlaylists(MouseEvent e) {
-		this.showPlaylists();
+		showPlaylists();
 	}
 
 	private void showPlaylists() {
-		//TODO: GridView das Playlists
 		this.paneListPlaylist.toFront();
-
 	}
 
 	@FXML
 	public void showDefault(MouseEvent e) {
-		this.showDefault();
+		showDefault();
 	}
 
 	private void showDefault() {
-		this.paneDefault.toFront();
+		paneDefault.toFront();
 	}
 
 	@FXML
 	public void showDirectories(MouseEvent e) {
-		this.showDirectories();
+		showDirectories();
 	}
 
 	private void showDirectories() {
-		this.paneListDirectory.toFront();
+		paneListDirectory.toFront();
 	}
 
 	private void showSongList(SongList songList) {
-		this.tableSongs.setItems(songList.list());
-		this.paneDirectory.toFront();
+		tableSongs.setItems(songList.list());
+		paneDirectory.toFront();
 	}
 
 	@FXML
 	public void addToQueue(Song s) {
-		if (this.queue == null)
-			this.queue = new SongQueue();
+		if (queue == null)
+			queue = new SongQueue();
 
-		this.queue.add(s);
+		queue.add(s);
 	}
 
 	private void play() {
+		bttnPlay.getStyleClass().setAll("icon-pauseButton");
+
 		if (player != null)
 			player.dispose();
 
-		Song currentSong = this.queue.next();
+		Song currentSong = queue.next();
 		if (currentSong == null) {
-			currentSong = this.queue.first();
+			currentSong = queue.first();
 		}
 
 		player = new MediaPlayer(new Media(currentSong.getURI()));
 		player.setOnEndOfMedia(this::play);
+		player.setVolume(sliderVolume.getValue() / 100);
 		player.play();
 
-		this.labelTitle.setText(currentSong.getTitle());
-		this.labelArtist.setText(currentSong.getArtist());
+		labelTitle.setText(currentSong.getTitle());
+		labelArtist.setText(currentSong.getArtist());
 	}
 
 	@FXML
 	public void playNext() {
-		if (this.queue == null)
+		bttnPlay.getStyleClass().setAll("icon-pauseButton");
+
+		if (queue == null)
 			return;
 
 		if (player != null)
 			player.dispose();
 
-		Song currentSong = this.queue.next();
+		Song currentSong = queue.next();
 		if (currentSong == null) {
-			currentSong = this.queue.first();
+			currentSong = queue.first();
 		}
 
 		player = new MediaPlayer(new Media(currentSong.getURI()));
 		player.setOnEndOfMedia(this::play);
+		player.setVolume(sliderVolume.getValue() / 100);
 		player.play();
 
-		this.labelTitle.setText(currentSong.getTitle());
-		this.labelArtist.setText(currentSong.getArtist());
+		labelTitle.setText(currentSong.getTitle());
+		labelArtist.setText(currentSong.getArtist());
 	}
 
 	@FXML
 	public void playPrevious(MouseEvent e) {
-		if (this.queue == null)
+		bttnPlay.getStyleClass().setAll("icon-pauseButton");
+
+		if (queue == null)
 			return;
 
 		if (e.getClickCount() == 2) {
 			if (player != null)
 				player.dispose();
 
-			Song currentSong = this.queue.previous();
+			Song currentSong = queue.previous();
 			if (currentSong == null)
-				currentSong = this.queue.last();
+				currentSong = queue.last();
 
 			player = new MediaPlayer(new Media(currentSong.getURI()));
 			player.setOnEndOfMedia(this::play);
+			player.setVolume(sliderVolume.getValue() / 100);
 			player.play();
 
-			this.labelTitle.setText(currentSong.getTitle());
-			this.labelArtist.setText(currentSong.getArtist());
+			labelTitle.setText(currentSong.getTitle());
+			labelArtist.setText(currentSong.getArtist());
 		}
 	}
 
 	@FXML
 	public void pauseOrResume() {
-		if (this.player == null)
+		if (player == null)
 			return;
 
-		if (this.player.getStatus() == MediaPlayer.Status.PLAYING) {
-			this.player.pause();
-			//TODO: mudar o ícone do botão para Play
+		if (player.getStatus() == MediaPlayer.Status.PLAYING) {
+			bttnPlay.getStyleClass().setAll("icon-playButton");
+			player.pause();
 		}
 
-		if (this.player.getStatus() == MediaPlayer.Status.PAUSED) {
-			this.player.play();
-			//TODO: mudar o ícone do botão para Pause
+		if (player.getStatus() == MediaPlayer.Status.PAUSED) {
+			bttnPlay.getStyleClass().setAll("icon-pauseButton");
+			player.play();
 		}
 	}
 
 	@FXML
 	public void reset(ActionEvent e) {
-		if (this.player == null)
+		bttnPlay.getStyleClass().setAll("icon-pauseButton");
+
+		if (player == null)
 			return;
 
-		this.player.seek(this.player.getStartTime());
+		player.seek(player.getStartTime());
+	}
+
+	@FXML
+	public void mute() {
+		sliderVolume.setValue(0);
+	}
+
+	public void logout() throws IOException {
+		player.dispose();
+
+		JavaMediaPlayer.directories = new ArrayList<>();
+		JavaMediaPlayer.playlists = new ArrayList<>();
+		JavaMediaPlayer.user = null;
+
+		JavaMediaPlayer.setRoot("view/Login");
 	}
 }

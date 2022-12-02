@@ -19,7 +19,7 @@ public class Song {
 	private int length;
 	private SimpleStringProperty artist;
 	
-	private String path;
+	private final String path;
 	
 	public Song(String title, int length, String artist, String path) {
 		this.title = new SimpleStringProperty(title);
@@ -36,9 +36,14 @@ public class Song {
 		AudioHeader audioHeader = audioFile.getAudioHeader();
 		Tag tag = audioFile.getTag();
 
-		//TODO: lidar com tags inexistentes
 		title = tag.getFirst(FieldKey.TITLE);
+		if (title.equals(""))
+			title = new File(path).getName();
+
 		artist = tag.getFirst(FieldKey.ARTIST);
+		if (artist.equals(""))
+			artist = "Artista Desconhecido";
+
 		length = audioHeader.getTrackLength();
 
 		this.title = new SimpleStringProperty(title);
@@ -50,9 +55,17 @@ public class Song {
 	public String getTitle() {
 		return title.get();
 	}
-	
+
 	public void setTitle(String title) {
 		this.title = new SimpleStringProperty(title);
+	}
+
+	public String getArtist() {
+		return artist.get();
+	}
+
+	public void setArtist(String artist) {
+		this.artist = new SimpleStringProperty(artist);
 	}
 	
 	public String getLength() {
@@ -64,14 +77,6 @@ public class Song {
 	public void setLength(int length) {
 		this.length = length;
 	}
-	
-	public String getArtist() {
-		return artist.get();
-	}
-	
-	public void setArtist(String artist) {
-		this.artist = new SimpleStringProperty(artist);
-	}
 
 	public String getURI() {
 		return new File(this.path).toURI().toString();
@@ -79,9 +84,5 @@ public class Song {
 
 	public String getPath() {
 		return this.path;
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 }
