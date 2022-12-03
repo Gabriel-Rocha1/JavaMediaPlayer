@@ -149,47 +149,40 @@ public class MainController implements Initializable {
 		tablecolTitle.setReorderable(false);
 		tablecolArtist.setReorderable(false);
 		tablecolLength.setReorderable(false);
-
-
-
 		tablecolTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		tablecolArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
 		tablecolLength.setCellValueFactory(new PropertyValueFactory<>("length"));
-
 		tablecolArtist.setStyle("-fx-alignment: center");
 		tablecolLength.setStyle("-fx-alignment: center");
 
 
-
-		Region icon = new Region();
-		icon.getStyleClass().add("icon-clock");
-
-		final int SIZE = 12;
-
-		icon.setMinSize(SIZE, SIZE);
-		icon.setPrefSize(SIZE, SIZE);
-		icon.setMaxSize(SIZE, SIZE);
-
-		tablecolLength.setGraphic(icon);
-
 		//tableSongSelection
-
 		tablecolSelectionTitle.setReorderable(false);
 		tablecolSelectionArtist.setReorderable(false);
 		tablecolSelectionLength.setReorderable(false);
-
 		tablecolSelectionTitle.setCellValueFactory(new PropertyValueFactory<>("title"));
 		tablecolSelectionArtist.setCellValueFactory(new PropertyValueFactory<>("artist"));
 		tablecolSelectionLength.setCellValueFactory(new PropertyValueFactory<>("length"));
-
 		tablecolSelectionArtist.setStyle("-fx-alignment: center");
 		tablecolSelectionLength.setStyle("-fx-alignment: center");
-
-		tablecolSelectionLength.setGraphic(icon);
-
 		tableSongSelection.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
 
 
+		Region iconClock1 = new Region(), iconClock2 = new Region();
+		iconClock1.getStyleClass().add("icon-clock");
+		iconClock2.getStyleClass().add("icon-clock");
+
+		final int s = 12;
+
+		iconClock1.setMinSize(s, s);
+		iconClock1.setPrefSize(s, s);
+		iconClock1.setMaxSize(s, s);
+		iconClock2.setMinSize(s, s);
+		iconClock2.setPrefSize(s, s);
+		iconClock2.setMaxSize(s, s);
+
+		tablecolLength.setGraphic(iconClock1);
+		tablecolSelectionLength.setGraphic(iconClock2);
 
 		//listDirectory
 		this.listDirectory.setCellFactory(new Callback<>() {
@@ -209,9 +202,12 @@ public class MainController implements Initializable {
 		});
 
 		listDirectory.getSelectionModel().selectedItemProperty().addListener((observableValue, directory, t1) -> {
-			SongDirectory dir = listDirectory.getSelectionModel().getSelectedItem();
-			showSongList(dir);
-
+			if (listDirectory.getSelectionModel().getSelectedItem() != null) {
+				SongDirectory dir = listDirectory.getSelectionModel().getSelectedItem();
+				showSongList(dir);
+			} else {
+				showDefault();
+			}
 		});
 
 		try {
@@ -330,7 +326,8 @@ public class MainController implements Initializable {
 	}
 
 	@FXML
-	public void addPlaylist(MouseEvent e) {
+	public void addPlaylist() {
+		listDirectory.getSelectionModel().clearSelection();
 		if (JavaMediaPlayer.user.isVip()) {
 			txtNamePlaylist.clear();
 			paneNamePlaylist.toFront();
@@ -341,7 +338,7 @@ public class MainController implements Initializable {
 	}
 
 	@FXML
-	public void namePlaylist(ActionEvent e) {
+	public void namePlaylist() {
 		String name = this.txtNamePlaylist.getText().trim();
 
 		if (name.length() == 0) {
@@ -441,6 +438,7 @@ public class MainController implements Initializable {
 
 	@FXML
 	public void showPlaylists(MouseEvent e) {
+		listDirectory.getSelectionModel().clearSelection();
 		showPlaylists();
 	}
 
