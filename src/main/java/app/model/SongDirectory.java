@@ -58,26 +58,18 @@ public class SongDirectory extends SongList implements ParseAudioFile {
 	}
 
 	/**
-	 * Carrega as músicas presentes no diretório, cria objetos Song nomeados com base nas Etiquetas do arquivo MP3
+	 * Carrega as músicas presentes no diretório, cria objetos Song a partir do caminho absoluto dos arquivos MP3
 	 * e as adiciona na Lista Observável de músicas.
 	 * @throws IOException
-	 * @throws CannotReadException
-	 * @throws TagException
-	 * @throws InvalidAudioFrameException
-	 * @throws ReadOnlyFileException
 	 */
 	private void loadDirectory() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
 		File directory = new File(directoryPath);
 		File[] files = directory.listFiles();
 
 		assert files != null;
-		for (File file : files) {
-			if (!isMP3(file))
-				continue;
-
-			Song s = new Song(getTitle(file), getArtist(file), getLength(file),  file.getPath());
-			this.add(s);
-		}
+		for (File file : files)
+			if (isMP3(file))
+				this.add(new Song(file.getPath()));
 	}
 
 	/**
