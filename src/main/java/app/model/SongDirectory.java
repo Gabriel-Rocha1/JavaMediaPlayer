@@ -5,32 +5,45 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import app.JavaMediaPlayer;
-import org.jaudiotagger.audio.AudioFile;
-import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.AudioHeader;
 import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
 import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
-import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.TagException;
 
-public class SongDirectory extends SongList {
+public class SongDirectory extends SongList implements ParseAudioFile {
+	/**
+	 * caminho absoluto do diretório no sistema
+	 */
 	private final String directoryPath;
-	private String name;
 
+	/**
+	 * nome do diretório
+	 */
+	private final String name;
+
+	/**
+	 *
+	 * @return nome do diretório
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	/**
+	 *
+	 * @return caminho absoluto do diretório
+	 */
 	public String getDirectoryPath() {
 		return directoryPath;
 	}
-	
+
+	/**
+	 * Construtor padrão do SongDirectory.
+	 * @param directoryPath caminho absoluto do diretório
+	 * @param name nome do diretório
+	 * @param reloading indica se o diretório está sendo recarregado ou não. Caso não esteja, seu
+	 *                  caminho absoluto será escrito no arquivo directory.dat
+	 */
 	public SongDirectory(String directoryPath, String name, boolean reloading) {
 		super();
 		this.directoryPath = directoryPath;
@@ -43,55 +56,37 @@ public class SongDirectory extends SongList {
 			throw new RuntimeException(e);
 		}
 	}
-	
+
+	/**
+	 * Carrega as músicas presentes no diretório, cria objetos Song nomeados com base nas Etiquetas do arquivo MP3
+	 * e as adiciona na Lista Observável de músicas.
+	 * @throws IOException
+	 * @throws CannotReadException
+	 * @throws TagException
+	 * @throws InvalidAudioFrameException
+	 * @throws ReadOnlyFileException
+	 */
 	private void loadDirectory() throws IOException, CannotReadException, TagException, InvalidAudioFrameException, ReadOnlyFileException {
 		File directory = new File(directoryPath);
 		File[] files = directory.listFiles();
 
-		String title, artist, fileName, filePath;
-		int length;
-
-		AudioFile audioFile;
-		AudioHeader audioHeader;
-		Tag tag;
-
+		assert files != null;
 		for (File file : files) {
-			fileName = file.toString();
-			if (!isMP3(fileName))
+			if (!isMP3(file))
 				continue;
 
-			audioFile = AudioFileIO.read(file);
-			audioHeader = audioFile.getAudioHeader();
-			tag = audioFile.getTag();
-
-			title = tag.getFirst(FieldKey.TITLE);
-			if (title.equals(""))
-				title = file.getName();
-
-			artist = tag.getFirst(FieldKey.ARTIST);
-			if (artist.equals(""))
-				artist = "Artista Desconhecido";
-
-			length = audioHeader.getTrackLength();
-			filePath = file.getPath();
-
-			Song s = new Song(title, length, artist, filePath);
+			Song s = new Song(getTitle(file), getArtist(file), getLength(file),  file.getPath());
 			this.add(s);
 		}
 	}
-	
+
+	/**
+	 * Escreve o caminho absoluto do diretório no arquivo directory.dat.
+	 * @throws IOException
+	 */
 	private void writeDirectory() throws IOException {
 		FileOutputStream fos = new FileOutputStream(JavaMediaPlayer.DIRECTORY_FILE_PATH, true);
 		fos.write((this.directoryPath + "\n").getBytes());
 		fos.close();
-	}
-
-	private boolean isMP3(String fileName) {
-		int index = fileName.lastIndexOf(".");
-		if (index > 0) {
-			String extension = fileName.substring(index + 1);
-			return extension.equals("mp3");
-		}
-		return false;
 	}
 }

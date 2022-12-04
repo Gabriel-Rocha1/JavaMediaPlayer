@@ -8,38 +8,45 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Playlist extends SongList {
-	private User owner;
-	private String name;
+	/**
+	 * nome da playlist
+	 */
+	private final String name;
 
-	public Playlist(User owner, String name) {
+	/**
+	 * Construtor padrão da classe Playlist, sem músicas.
+	 * @param name nome da playlist
+	 */
+	public Playlist(String name) {
 		super();
-		this.owner = owner;
 		this.name = name;
 	}
 
-	public Playlist(User owner, String name, ObservableList<Song> songs) {
+	/**
+	 * Construtor alternativo da classe Playlist que adiciona todas as músicas de uma vez,
+	 * utilizado no recarregamento de playlists no sistema.
+	 * @param name nome da playlist
+	 * @param songs lista de músicas
+	 */
+	public Playlist(String name, ObservableList<Song> songs) {
 		super();
-		this.owner = owner;
 		this.name = name;
 		this.songs = songs;
 	}
-	
-	public User getOwner() {
-		return owner;
-	}
 
-	public void setOwner(User owner) {
-		this.owner = owner;
-	}
-
+	/**
+	 *
+	 * @return nome da playlist
+	 */
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
+	/**
+	 * Escreve a playlist no sistema. Na primeira linha é escrito o nome da playlist, as demais linhas contém os
+	 * caminhos absolutos de cada música da playlist, um por linha.
+	 * @throws IOException
+	 */
 	public void write() throws IOException {
 		File f = new File(JavaMediaPlayer.PLAYLISTS_DIRECTORY_PATH + "/" + JavaMediaPlayer.user.getUsername() + "/" + this.name + ".dat");
 		FileOutputStream fos = new FileOutputStream(f);
@@ -50,5 +57,4 @@ public class Playlist extends SongList {
 
 		fos.close();
 	}
-
 }

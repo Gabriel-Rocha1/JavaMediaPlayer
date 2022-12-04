@@ -9,5 +9,6 @@ module JavaMediaPlayer {
     opens app.model to javafx.base;
 
     exports app.control;
+    exports app.model;
     exports app;
 }

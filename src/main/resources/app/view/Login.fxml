@@ -5,6 +5,7 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -13,7 +14,7 @@
       <Label layoutX="496.0" layoutY="210.0" text="Nome de Usuário" />
       <TextField fx:id="txtLoginUsername" layoutX="496.0" layoutY="230.0" />
       <Label layoutX="496.0" layoutY="300.0" text="Senha" />
-      <TextField fx:id="txtLoginPassword" layoutX="496.0" layoutY="320.0" />
+      <PasswordField fx:id="txtLoginPassword" layoutX="497.0" layoutY="320.0" />
       <Button fx:id="bttnEntrar" layoutX="496.0" layoutY="382.0" mnemonicParsing="false" onAction="#authenticate" prefHeight="25.0" prefWidth="149.0" text="Entrar">
          <cursor>
             <Cursor fx:constant="HAND" />
@@ -24,7 +25,7 @@
       <Label layoutX="99.0" layoutY="270.0" text="Nome de Usuário" />
       <TextField fx:id="txtRegisterUsername" disable="true" layoutX="99.0" layoutY="287.0" />
       <Label layoutX="99.0" layoutY="331.0" text="Senha" />
-      <TextField fx:id="txtRegisterPassword" disable="true" layoutX="99.0" layoutY="347.0" />
+      <PasswordField fx:id="txtRegisterPassword" disable="true" layoutX="99.0" layoutY="347.0" />
       <CheckBox fx:id="checkVIP" layoutX="99.0" layoutY="386.0" mnemonicParsing="false" prefHeight="17.0" prefWidth="149.0" text="Conta VIP" />
       <Button fx:id="bttnCreateAccount" disable="true" layoutX="99.0" layoutY="426.0" mnemonicParsing="false" onAction="#createAccount" prefHeight="25.0" prefWidth="149.0" text="Criar Conta" />
       <AnchorPane fx:id="paneDivider" prefHeight="700.0" prefWidth="400.0" style="-fx-background-color: #7b35a1;" />

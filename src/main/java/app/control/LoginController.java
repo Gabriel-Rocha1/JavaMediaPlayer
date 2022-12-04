@@ -20,36 +20,62 @@ import java.util.ResourceBundle;
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.TextField;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.ButtonBar;
+import javafx.scene.control.PasswordField;
 import javafx.scene.layout.AnchorPane;
 
 public class LoginController implements Initializable {
+	@FXML private AnchorPane paneDivider;
+
 	@FXML private Button bttnCreateAccount;
 
 	@FXML private CheckBox checkVIP;
 
-	@FXML private AnchorPane paneDivider;
-
-	@FXML private TextField txtLoginPassword;
+	@FXML private PasswordField txtLoginPassword;
+	@FXML private PasswordField txtRegisterPassword;
     @FXML private TextField txtLoginUsername;
     @FXML private TextField txtRegisterName;
-    @FXML private TextField txtRegisterPassword;
     @FXML private TextField txtRegisterUsername;
 
 	@FXML private Dialog<String> dialog;
 	@FXML private ButtonType type;
 
+	/**
+	 * HashMap contendo as combinações de username e senha registrados no sistema
+	 */
     private HashMap<String, String> credentials;
-    private ArrayList<User> accounts;
 
+	/**
+	 * ArrayList contendo todas as combinações de nome + username + status VIP registradas no sistema
+	 */
+	private ArrayList<User> accounts;
+
+	/**
+	 * Lê o arquivo accounts.dat e adiciona:
+	 * no HashMap, combinações de usuário + senha,
+	 * no ArrayList, combinações de nome + username + status VIP.
+	 *
+	 * @param location
+	 * The location used to resolve relative paths for the root object, or
+	 * {@code null} if the location is not known.
+	 *
+	 * @param resources
+	 * The resources used to localize the root object, or {@code null} if
+	 * the root object was not localized.
+	 */
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		credentials = new HashMap<>();
 		accounts = new ArrayList<>();
 
+		type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
 		dialog = new Dialog<>();
 		dialog.setTitle("Erro");
-		type = new ButtonType("Ok", ButtonBar.ButtonData.OK_DONE);
 		dialog.getDialogPane().getButtonTypes().add(type);
 
 		try {
@@ -85,8 +111,12 @@ public class LoginController implements Initializable {
 			e.printStackTrace();
 		}
 	}
-    
-    @FXML
+
+	/**
+	 * Lê os campos de username e senha e verifica se as credenciais existem no HashMap.
+	 * @throws IOException
+	 */
+	@FXML
     public void authenticate() throws IOException {
     	String username = txtLoginUsername.getText();
     	String password = hashPassword(txtLoginPassword.getText());
@@ -106,21 +136,31 @@ public class LoginController implements Initializable {
     	} else {
 			dialog.setContentText("Nome de Usuário ou Senha inválidos.");
 			dialog.showAndWait();
+			txtLoginUsername.clear();
+			txtLoginPassword.clear();
     	}
     }
-    
-    @FXML
+
+	/**
+	 * Habilita os campos de registro e move o (Pane) que está os cobrindo à direita.
+	 */
+	@FXML
     public void register() {
     	txtRegisterName.setDisable(false);
     	txtRegisterUsername.setDisable(false);
     	txtRegisterPassword.setDisable(false);
     	bttnCreateAccount.setDisable(false);
-    	
-    	//TODO: criar animação de deslizar o painel para a direita
+
     	paneDivider.setLayoutX(400);
     }
-    
-    @FXML
+
+	/**
+	 * Lê os campos de nome, username e senha e registra o usuário se
+	 * todos os campos forem preenchidos corretamente e não
+	 * houver nenhum usuário registrado com o username fornecido.
+	 * @throws IOException
+	 */
+	@FXML
     public void createAccount() throws IOException {
 		String name = txtRegisterName.getText();
 		String username = txtRegisterUsername.getText();
@@ -154,8 +194,16 @@ public class LoginController implements Initializable {
 			return;
 		}
 
-		String hashedPassword = hashPassword(password);
+		if (vipStatus == 1) {
+			File f = new File(JavaMediaPlayer.PLAYLISTS_DIRECTORY_PATH + "/" + username);
+			if (!f.mkdir()) {
+				dialog.setContentText("Erro ao criar pasta de Playlists no sistema. Verifique o nível de acesso do diretório atual e tente novamente.");
+				dialog.showAndWait();
+				return;
+			}
+		}
 
+		String hashedPassword = hashPassword(password);
 		credentials.put(username, hashedPassword);
 
 		JavaMediaPlayer.user = new User(name, username);
@@ -175,15 +223,15 @@ public class LoginController implements Initializable {
 		txtRegisterUsername.clear();
 		txtRegisterPassword.clear();
 
-		if (vipStatus == 1) {
-			File f = new File(JavaMediaPlayer.PLAYLISTS_DIRECTORY_PATH + "/" + username);
-			f.mkdir();
-		}
-
 		JavaMediaPlayer.setRoot("view/Main");
 	}
-    
-    private String hashPassword(String password) {
+
+	/**
+	 * Criptografa a senha que será escrita no arquivo accounts.dat.
+	 * @param password senha em texto.
+	 * @return senha criptografada.
+	 */
+	private String hashPassword(String password) {
     	MessageDigest messageDigest;
 		try {
 			messageDigest = MessageDigest.getInstance("MD5");
