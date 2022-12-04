@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="700.0" prefWidth="800.0" style="-fx-background-color: #404258;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="app.control.MainController">
+   <children>
+      <AnchorPane fx:id="paneDirectories" layoutX="10.0" layoutY="10.0" prefHeight="230.0" prefWidth="235.0" style="-fx-background-color: #474E68;">
+         <children>
+            <ListView fx:id="listDirectory" layoutY="45.0" prefHeight="180.0" prefWidth="235.0" />
+            <Label fx:id="bttnAddDirectory" layoutX="209.0" layoutY="5.0" onMouseClicked="#chooseDirectory" prefHeight="30.0" prefWidth="17.0" text="+" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelDirectory1" layoutX="7.0" layoutY="11.0" onMouseClicked="#showDirectories" text="Diretórios">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelDirectory" layoutX="9.0" layoutY="9.0" onMouseClicked="#showDirectories" text="Diretórios" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="panePlaylists" layoutX="10.0" layoutY="250.0" prefHeight="230.0" prefWidth="236.0" style="-fx-background-color: #474E68;">
+         <children>
+            <Label fx:id="bttnAddPlaylist" layoutX="210.0" layoutY="6.0" onMouseClicked="#addPlaylist" prefHeight="35.0" prefWidth="17.0" text="+" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="24.0" />
+               </font>
+            </Label>
+            <ListView fx:id="listPlaylist" layoutY="45.0" prefHeight="180.0" prefWidth="235.0" />
+            <Label fx:id="labelPlaylist1" layoutX="8.0" layoutY="14.0" onMouseClicked="#showPlaylists" text="Playlists">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+            <Label fx:id="labelPlaylist" layoutX="10.0" layoutY="12.0" onMouseClicked="#showPlaylists" text="Playlists" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="panePlayer" layoutX="10.0" layoutY="490.0" prefHeight="200.0" prefWidth="780.0">
+         <children>
+            <Button fx:id="bttnBackward" layoutX="303.0" layoutY="149.0" mnemonicParsing="false" onAction="#reset" onMouseClicked="#playPrevious" prefHeight="25.0" prefWidth="25.0" style="-fx-shape: &quot;M427.6 106c15.6.1 27.7 13.8 25.7 29.3c-16 124-16 117.4 0 241.4c2.5 19.8-17.4 35-35.8 27.3l-267-111.1v98.8c0 7.9-8.9 14.2-20 14.3H78.49c-11.1-.1-20-6.4-20-14.3V120.2c.1-7.8 9-14.1 20-14.2h52.01c11 .1 19.9 6.4 20 14.2v98.9l267-111.1c3.2-1.3 6.6-2 10.1-2z&quot;; -fx-background-color: black;" />
+            <ProgressBar layoutX="40.0" layoutY="114.0" prefHeight="5.0" prefWidth="700.0" progress="0.0" />
+            <Button fx:id="bttnPlay" layoutX="370.0" layoutY="141.0" mnemonicParsing="false" onAction="#pauseOrResume" prefHeight="40.0" prefWidth="40.0" style="-fx-background-color: black;" />
+            <Button fx:id="bttnForward" layoutX="452.0" layoutY="149.0" mnemonicParsing="false" onAction="#playNext" prefHeight="25.0" prefWidth="25.0" style="-fx-shape: &quot;M84.41 106c-15.63.1-27.67 13.8-25.69 29.3c16 124 16 117.4 0 241.4c-2.54 19.8 17.33 35 35.79 27.3L361.5 292.9v98.8c0 7.9 8.9 14.2 20 14.3h52c11.1-.1 20-6.4 20-14.3V120.2c-.1-7.8-9-14.1-20-14.2h-52c-11 .1-19.9 6.4-20 14.2v98.9L94.51 108c-3.2-1.3-6.63-2-10.1-2z&quot;; -fx-background-color: black;" />
+            <Label fx:id="labelTitle" alignment="CENTER" layoutY="14.0" prefHeight="40.0" prefWidth="780.0" style="-fx-text-fill: white;" text="Weird Fishes/ Arpeggi" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="28.0" />
+               </font>
+            </Label>
+            <Slider fx:id="sliderVolume" layoutX="640.0" layoutY="148.0" prefHeight="25.0" prefWidth="100.0" value="100.0" />
+            <Label fx:id="labelArtist" alignment="CENTER" layoutY="54.0" prefHeight="42.0" prefWidth="780.0" style="-fx-text-fill: grey;" text="Radiohead" textFill="#9a9a9a">
+               <font>
+                  <Font name="System Bold" size="22.0" />
+               </font>
+            </Label>
+            <Region fx:id="bttnMute" layoutX="616.0" layoutY="153.0" onMouseClicked="#mute" prefHeight="16.0" prefWidth="16.0" style="-fx-background-color: black;" />
+            <Region fx:id="bttnHome" layoutX="41.0" layoutY="150.0" onMouseClicked="#showDefault" prefHeight="22.0" prefWidth="24.0" style="-fx-background-color: white; -fx-shape: &quot;M10 19v-5h4v5c0 .55.45 1 1 1h3c.55 0 1-.45 1-1v-7h1.7c.46 0 .68-.57.33-.87L12.67 3.6c-.38-.34-.96-.34-1.34 0l-8.36 7.53c-.34.3-.13.87.33.87H5v7c0 .55.45 1 1 1h3c.55 0 1-.45 1-1z&quot;;" />
+         </children>
+      </AnchorPane>
+      <AnchorPane fx:id="paneMenu" layoutX="340.0" layoutY="10.0" prefHeight="31.0" prefWidth="450.0" style="-fx-background-color: transparent;">
+         <children>
+            <MenuButton fx:id="menuProfile" layoutX="396.0" layoutY="1.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="41.0">
+              <items>
+                <MenuItem fx:id="menuItemLogout" mnemonicParsing="false" text="Trocar de Conta" />
+              </items>
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </MenuButton>
+            <Label fx:id="labelName" layoutY="2.0" prefHeight="30.0" prefWidth="366.0" text="Label" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="18.0" />
+               </font>
+            </Label>
+         </children></AnchorPane>
+      <AnchorPane layoutX="255.0" layoutY="50.0" prefHeight="430.0" prefWidth="535.0">
+         <children>
+            <ScrollPane fx:id="paneListDirectory" prefHeight="430.0" prefWidth="535.0">
+               <content>
+                  <GridPane fx:id="gridDirectory" prefHeight="430.0" prefWidth="535.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+            <ScrollPane fx:id="paneListPlaylist" prefHeight="430.0" prefWidth="535.0">
+               <content>
+                  <GridPane fx:id="gridPlaylist" prefHeight="430.0" prefWidth="535.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                  </GridPane>
+               </content>
+            </ScrollPane>
+            <AnchorPane fx:id="paneDirectory" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: white;">
+               <children>
+                  <TableView fx:id="tableSongs" prefHeight="430.0" prefWidth="535.0">
+                    <columns>
+                      <TableColumn fx:id="tablecolTitle" editable="false" prefWidth="254.0" resizable="false" text="Título" />
+                      <TableColumn fx:id="tablecolArtist" editable="false" prefWidth="213.0" resizable="false" text="Artista" />
+                        <TableColumn fx:id="tablecolLength" editable="false" minWidth="0.0" prefWidth="67.0" resizable="false" />
+                    </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="paneNamePlaylist" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: #404258;">
+               <children>
+                  <Label layoutX="100.0" layoutY="102.0" prefHeight="119.0" prefWidth="336.0" text="Dê um nome a sua Playlist" textFill="WHITE" wrapText="true">
+                     <font>
+                        <Font name="System Bold" size="36.0" />
+                     </font></Label>
+                  <TextField fx:id="txtNamePlaylist" layoutX="239.0" layoutY="179.0" prefHeight="25.0" prefWidth="174.0" />
+                  <Button fx:id="bttnNamePlaylist" layoutX="332.0" layoutY="235.0" mnemonicParsing="false" onAction="#namePlaylist" text="Criar Playlist" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="paneSongSelection" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: #404258;">
+               <children>
+                  <TableView fx:id="tableSongSelection" layoutY="69.0" prefHeight="360.0" prefWidth="535.0">
+                     <columns>
+                        <TableColumn fx:id="tablecolSelectionTitle" editable="false" prefWidth="254.0" resizable="false" text="Título" />
+                        <TableColumn fx:id="tablecolSelectionArtist" editable="false" prefWidth="213.0" resizable="false" text="Artista" />
+                        <TableColumn fx:id="tablecolSelectionLength" editable="false" minWidth="0.0" prefWidth="67.0" resizable="false" />
+                     </columns>
+                     <columnResizePolicy>
+                        <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                     </columnResizePolicy>
+                  </TableView>
+                  <Label layoutX="14.0" layoutY="5.0" prefHeight="46.0" prefWidth="450.0" text="Escolha as músicas da sua Playlist" textFill="WHITE">
+                     <font>
+                        <Font name="System Bold" size="24.0" />
+                     </font>
+                  </Label>
+                  <Button fx:id="bttnCreatePlaylist" layoutX="446.0" layoutY="16.0" mnemonicParsing="false" onAction="#createPlaylist" prefHeight="25.0" prefWidth="69.0" text="Confirmar" />
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="paneDefault" prefHeight="430.0" prefWidth="535.0" style="-fx-background-color: #404258;">
+               <children>
+                  <Region layoutX="168.0" layoutY="115.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: white; -fx-shape: &quot;M31.68 6.16c-1.92-3.3-10.6-4-11.58-4.09L19 2v20.29a5.88 5.88 0 0 0-.81-.55a8.33 8.33 0 0 0-6.53-.41c-4.12 1.33-6.77 5.13-5.91 8.47a5.33 5.33 0 0 0 2.66 3.32a7.48 7.48 0 0 0 3.61.88a9.54 9.54 0 0 0 2.98-.48c3.7-1.19 6.2-4.37 6.06-7.42V8.49c1 .12 2.37.33 3.82.64a11.17 11.17 0 0 1 4.06 1.46c1 .66.38 1.9.33 2a11.8 11.8 0 0 1-1.66 2a1 1 0 0 0 1.33 1.49c.21-.23 5.56-5.08 2.74-9.92Z&quot;; -fx-background-color: #7b35a1;" />
+               </children></AnchorPane>
+         </children>
+      </AnchorPane>
+   </children>
+</AnchorPane>
