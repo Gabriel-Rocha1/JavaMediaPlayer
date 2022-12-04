@@ -8,6 +8,7 @@ import app.model.SongList;
 import app.model.Playlist;
 import app.model.Song;
 
+import javafx.collections.ObservableList;
 import javafx.fxml.Initializable;
 import javafx.fxml.FXML;
 
@@ -527,6 +528,7 @@ public class MainController implements Initializable {
 				return;
 			}
 
+		tableSongSelection.getSelectionModel().clearSelection();
 		for (SongDirectory d : JavaMediaPlayer.directories)
 			for (int i = 0; i < d.size(); i++)
 				tableSongSelection.getItems().add(d.at(i));
@@ -542,16 +544,18 @@ public class MainController implements Initializable {
 	 */
 	@FXML
 	public void createPlaylist() throws IOException {
-		Playlist playlist = new Playlist(
-				txtNamePlaylist.getText().trim(),
-				tableSongSelection.getSelectionModel().getSelectedItems()
-		);
+		Playlist playlist = new Playlist(txtNamePlaylist.getText().trim());
+
+		for (Song s : tableSongSelection.getSelectionModel().getSelectedItems()) {
+			playlist.add(s);
+		}
 
 		playlist.write();
 
 		JavaMediaPlayer.playlists.add(playlist);
 		listPlaylist.getItems().add(playlist);
 		addPlaylist(playlist);
+
 		showPlaylists();
 	}
 
