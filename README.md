@@ -1,6 +1,8 @@
 ## JavaMediaPlayer
 JavaMediaPlayer é uma aplicação que reproduz mídias MP3 desenvolvida no Framework JavaFX.
 
+![alt text](image.png)
+
 ## Pré-requisitos
 - Java Development Kit (JDK) - 19
 - Apache Maven 3.8.6
